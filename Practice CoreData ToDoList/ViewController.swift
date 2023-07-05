@@ -13,7 +13,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     let tableView: UITableView = {
         let table = UITableView()
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        return table
     }()
+    
+    private var models = [ToDoListItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,19 +27,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.frame = view.bounds
     }
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return models.count
+    }
     
-    
-    
-    
-    
-    
-    
-    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let model = models[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.textLabel?.text = model.name
+        return cell
+    }
     
     // MARK: Core Data
     func getAllItems() {
         do {
-            let items = try context.fetch(ToDoListItem.fetchRequest())
+            let models = try context.fetch(ToDoListItem.fetchRequest())
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            
         }
         catch {
             // error
