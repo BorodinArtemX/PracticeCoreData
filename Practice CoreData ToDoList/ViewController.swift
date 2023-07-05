@@ -7,17 +7,36 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    let tableView: UITableView = {
+        let table = UITableView()
+        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        title = "CoreData ToDoList"
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.frame = view.bounds
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: Core Data
     func getAllItems() {
         do {
-            let items = context.fetch(ToDoListItem.fetchRequest())
+            let items = try context.fetch(ToDoListItem.fetchRequest())
         }
         catch {
             // error
