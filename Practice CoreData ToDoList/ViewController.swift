@@ -21,10 +21,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "CoreData ToDoList"
-        view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.frame = view.bounds
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                            target: self,
+                                                            action: #selector(didTapAdd))
+        view.addSubview(tableView)
+        getAllItems()
+    }
+    
+    @objc private func didTapAdd() {
+        let alert = UIAlertController(title: "New Item",
+                                      message: "Enter new item",
+                                      preferredStyle: .alert)
+        alert.addTextField(configurationHandler: nil)
+        alert.addAction(UIAlertAction(title: "Submit", style: .cancel, handler: { [weak self] _ in
+            guard let field = alert.textFields?.first, let text = field.text, !text.isEmpty else {
+                return
+            }
+            
+            self?.createItem(name: text)
+        }))
+        
+        present(alert, animated: true)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -41,7 +61,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     // MARK: Core Data
     func getAllItems() {
         do {
-            let models = try context.fetch(ToDoListItem.fetchRequest())
+            models = try context.fetch(ToDoListItem.fetchRequest())
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -58,6 +78,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         newItem.createdAt = Date()
         do {
             try context.save()
+            getAllItems()
         }
         catch {
             
