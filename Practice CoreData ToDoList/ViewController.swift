@@ -29,6 +29,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                                                             action: #selector(didTapAdd))
         view.addSubview(tableView)
         getAllItems()
+        view.backgroundColor = .blue
+       
     }
     
     @objc private func didTapAdd() {
@@ -89,7 +91,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     // MARK: Core Data
-    func getAllItems() {
+    func getAllItems(){
+        let gradientLayout = CAGradientLayer()
+        gradientLayout.frame = view.bounds
+        gradientLayout.colors = [
+            UIColor.systemPink.cgColor,
+            UIColor.systemOrange.cgColor
+        ]
+        view.layer.addSublayer(gradientLayout)
         do {
             models = try context.fetch(ToDoListItem.fetchRequest())
             DispatchQueue.main.async {
